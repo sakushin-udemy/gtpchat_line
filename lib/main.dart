@@ -86,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -98,7 +100,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ListView.builder(
                     itemCount: _messages.length,
                     itemBuilder: (context, index) {
-                      return Text(_messages[index].message);
+                      return Row(
+                        children: [
+                          Icon(Icons.add),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: deviceWidth * 0.7),
+                              child: Text(_messages[index].message)),
+                          Text('午前12:00')
+                        ],
+                      );
                     })),
             Row(
               children: [
