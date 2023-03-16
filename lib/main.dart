@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: _MyHomePageState.colorBackground,
+        appBarTheme: AppBarTheme(color: _MyHomePageState.colorBackground),
+        scaffoldBackgroundColor: Colors.white,
       ),
       home: const MyHomePage(title: 'Talk with ChatGPT'),
     );
@@ -105,67 +106,70 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-                child: ListView.builder(
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      final message = _messages[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: message.fromChatGpt
-                              ? MainAxisAlignment.start
-                              : MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (message.fromChatGpt)
-                              SizedBox(
-                                  width: deviceWidth * 0.1,
-                                  child: CircleAvatar(
-                                      backgroundColor: colorAvatar,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Image.asset(
-                                            'assets/images/openai.png'),
-                                      ))),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                if (!message.fromChatGpt)
-                                  Text(
-                                    _formatDateTime(message.sendTime),
-                                    style: TextStyle(color: colorTime),
-                                  ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                        maxWidth: deviceWidth * 0.7),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: message.fromChatGpt
-                                          ? colorOthersMessage
-                                          : colorMyMessage,
-                                    ),
+                child: ColoredBox(
+              color: colorBackground,
+              child: ListView.builder(
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: message.fromChatGpt
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (message.fromChatGpt)
+                            SizedBox(
+                                width: deviceWidth * 0.1,
+                                child: CircleAvatar(
+                                    backgroundColor: colorAvatar,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        message.message,
-                                        style: TextStyle(fontSize: 16),
-                                      ),
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Image.asset(
+                                          'assets/images/openai.png'),
+                                    ))),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if (!message.fromChatGpt)
+                                Text(
+                                  _formatDateTime(message.sendTime),
+                                  style: TextStyle(color: colorTime),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: deviceWidth * 0.7),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: message.fromChatGpt
+                                        ? colorOthersMessage
+                                        : colorMyMessage,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      message.message,
+                                      style: TextStyle(fontSize: 16),
                                     ),
                                   ),
                                 ),
-                                if (message.fromChatGpt)
-                                  Text(
-                                    _formatDateTime(message.sendTime),
-                                    style: TextStyle(color: colorTime),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    })),
+                              ),
+                              if (message.fromChatGpt)
+                                Text(
+                                  _formatDateTime(message.sendTime),
+                                  style: TextStyle(color: colorTime),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )),
             Container(
               color: Colors.white,
               child: Row(
