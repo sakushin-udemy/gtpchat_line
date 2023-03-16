@@ -129,6 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
+                                if (!message.fromChatGpt)
+                                  Text(_formatDateTime(message.sendTime)),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
@@ -149,7 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                   ),
                                 ),
-                                Text(_formatDateTime(message.sendTime)),
+                                if (message.fromChatGpt)
+                                  Text(_formatDateTime(message.sendTime)),
                               ],
                             ),
                           ],
