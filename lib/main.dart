@@ -114,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           mainAxisAlignment: message.fromChatGpt
                               ? MainAxisAlignment.start
                               : MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (message.fromChatGpt)
                               SizedBox(
@@ -125,27 +126,32 @@ class _MyHomePageState extends State<MyHomePage> {
                                         child: Image.asset(
                                             'assets/images/openai.png'),
                                       ))),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                constraints:
-                                    BoxConstraints(maxWidth: deviceWidth * 0.7),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: message.fromChatGpt
-                                      ? colorOthersMessage
-                                      : colorMyMessage,
-                                ),
-                                child: Padding(
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    message.message,
-                                    style: TextStyle(fontSize: 16),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth: deviceWidth * 0.7),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: message.fromChatGpt
+                                          ? colorOthersMessage
+                                          : colorMyMessage,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        message.message,
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Text('12:00')
+                              ],
                             ),
-                            Text('12:00')
                           ],
                         ),
                       );
