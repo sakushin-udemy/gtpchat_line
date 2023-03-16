@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static Color colorOthersMessage = Color.fromARGB(0xFF, 0xff, 0xff, 0xff);
   static Color colorTime = Color.fromARGB(0xFF, 0x72, 0x88, 0xa8);
   static Color colorAvatar = Color.fromARGB(0xFF, 0x76, 0x5a, 0x44);
+  static Color colorInput = Color.fromARGB(0xFF, 0xf5, 0xf5, 0xf5);
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 if (!message.fromChatGpt)
-                                  Text(_formatDateTime(message.sendTime)),
+                                  Text(
+                                    _formatDateTime(message.sendTime),
+                                    style: TextStyle(color: colorTime),
+                                  ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
@@ -152,29 +156,41 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                 ),
                                 if (message.fromChatGpt)
-                                  Text(_formatDateTime(message.sendTime)),
+                                  Text(
+                                    _formatDateTime(message.sendTime),
+                                    style: TextStyle(color: colorTime),
+                                  ),
                               ],
                             ),
                           ],
                         ),
                       );
                     })),
-            Row(
-              children: [
-                Expanded(
-                    child: TextField(
-                  controller: _textEditingController,
-                )),
-                IconButton(
-                    onPressed: () async {
-                      final answer =
-                          await _sendMessage(_textEditingController.text);
-                      setState(() {
-                        _answer = answer;
-                      });
-                    },
-                    icon: Icon(Icons.send)),
-              ],
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                      child: TextField(
+                    style: TextStyle(fontSize: 14),
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                        fillColor: colorInput,
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32))),
+                  )),
+                  IconButton(
+                      onPressed: () async {
+                        final answer =
+                            await _sendMessage(_textEditingController.text);
+                        setState(() {
+                          _answer = answer;
+                        });
+                      },
+                      icon: Icon(Icons.send)),
+                ],
+              ),
             ),
             Text(_answer),
           ],
