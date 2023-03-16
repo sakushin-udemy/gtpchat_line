@@ -56,8 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
   var _answer = '';
 
   final _messages = <Message>[
-    Message("こんにちは！", DateTime(2023, 4, 1, 10, 0, 0), fromChatGpt: false),
-    Message("こんにちは！お元気ですか？", DateTime(2023, 4, 1, 10, 1, 0), fromChatGpt: true),
+    Message("こんにちは！", DateTime(2023, 4, 1, 9, 5, 0), fromChatGpt: false),
+    Message("こんにちは！お元気ですか？", DateTime(2023, 4, 1, 9, 59, 0), fromChatGpt: true),
     Message("はい、元気です。あなたは何ができますか？", DateTime(2023, 4, 1, 10, 2, 0),
         fromChatGpt: false),
     Message("私はあなたの悩みを聞いたり、おすすめのレストランを教えたり、天気予報を教えたりすることができます。何かお探しですか？",
@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                   ),
                                 ),
-                                Text('12:00')
+                                Text(_formatDateTime(message.sendTime)),
                               ],
                             ),
                           ],
@@ -178,6 +178,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
   Future<String> _sendMessage(String message) async {
