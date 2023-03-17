@@ -175,6 +175,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         Icons.send,
                         color: _isLoading ? Colors.grey : Colors.black,
                       )),
+                  IconButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              _onTapImage(_textEditingController.text);
+                            },
+                      icon: Icon(
+                        Icons.image,
+                        color: _isLoading ? Colors.grey : Colors.black,
+                      )),
                 ],
               ),
             ),
@@ -222,5 +232,17 @@ class _MyHomePageState extends State<MyHomePage> {
           duration: const Duration(milliseconds: 500),
           curve: Curves.fastOutSlowIn);
     });
+  }
+
+  void _onTapImage(String message) {
+    _generateImages(message, 2);
+  }
+
+  Future<void> _generateImages(String message, int numOfImages) async {
+    final request = GenerateImage(message, numOfImages, size: '256x256');
+    final response = await openAI.generateImage(request);
+    final imageList = response?.data ?? [];
+
+    print(imageList);
   }
 }
