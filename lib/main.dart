@@ -83,6 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   itemCount: _messages.length,
                   itemBuilder: (context, index) {
                     final message = _messages[index];
+                    final showLoadingIcon =
+                        _isLoading && index == _messages.length - 1;
+
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -122,10 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      message.message,
-                                      style: TextStyle(fontSize: 16),
-                                    ),
+                                    child: showLoadingIcon
+                                        ? const CircularProgressIndicator()
+                                        : Text(
+                                            message.message,
+                                            style: TextStyle(fontSize: 16),
+                                          ),
                                   ),
                                 ),
                               ),
