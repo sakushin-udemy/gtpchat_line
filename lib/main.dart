@@ -156,6 +156,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   }
                                                   return child;
                                                 },
+                                                loadingBuilder:
+                                                    (BuildContext context,
+                                                        Widget child,
+                                                        ImageChunkEvent?
+                                                            loadingProgress) {
+                                                  if (loadingProgress != null) {
+                                                    return const CircularProgressIndicator();
+                                                  }
+                                                  return child;
+                                                },
                                               )
                                             : Text(
                                                 message.message,
