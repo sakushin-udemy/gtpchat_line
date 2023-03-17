@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _sendMessage(userMessage).then((chatGptMessage) {
       setState(() {
         _messages.last =
-            Message(chatGptMessage, DateTime.now(), fromChatGpt: true);
+            Message(chatGptMessage.trim(), DateTime.now(), fromChatGpt: true);
       });
     });
   }
