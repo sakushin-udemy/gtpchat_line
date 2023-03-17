@@ -54,8 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     text: 'What is Flutter?',
   );
 
-  var _answer = '';
-
+  bool _isLoading = false;
   final _messages = <Message>[];
 
   static Color colorBackground = Color.fromARGB(0xFF, 0x90, 0xac, 0xd7);
@@ -157,10 +156,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(32))),
                   )),
                   IconButton(
-                      onPressed: () async {
-                        _onTapSend(_textEditingController.text);
-                      },
-                      icon: Icon(Icons.send)),
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              _onTapSend(_textEditingController.text);
+                            },
+                      icon: Icon(
+                        Icons.send,
+                        color: _isLoading ? Colors.grey : Colors.black,
+                      )),
                 ],
               ),
             ),
@@ -176,6 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onTapSend(String userMessage) {
     setState(() {
+      _isLoading = true;
       _messages.addAll([
         Message(userMessage, DateTime.now(), fromChatGpt: false),
         Message('...', DateTime.now(), fromChatGpt: true),
@@ -186,6 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _messages.last =
             Message(chatGptMessage.trim(), DateTime.now(), fromChatGpt: true);
+        _isLoading = false;
       });
     });
   }
