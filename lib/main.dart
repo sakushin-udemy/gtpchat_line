@@ -1,4 +1,5 @@
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'package:chat_gpt_sdk/src/model/gen_image/response/image_data.dart';
 import 'package:flutter/material.dart';
 
 import 'api_key.dart';
@@ -10,15 +11,24 @@ void main() {
 class Message {
   const Message(
     this.message,
+    this.imageUrl,
     this.sendTime, {
     required this.fromChatGpt,
   });
   final String message;
+  final String imageUrl;
   final bool fromChatGpt;
   final DateTime sendTime;
 
+  Message.fromUser(String message, DateTime now)
+      : this(message, '', now, fromChatGpt: false);
+  Message.fromChatGPT(String message, DateTime now)
+      : this(message, '', now, fromChatGpt: true);
+  Message.image(String imageUrl, DateTime now)
+      : this('', imageUrl, now, fromChatGpt: true);
+
   Message.waitResponse(DateTime now)
-      : this('', DateTime.now(), fromChatGpt: true);
+      : this('', '', DateTime.now(), fromChatGpt: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -132,10 +142,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: showLoadingIcon
                                         ? const CircularProgressIndicator()
-                                        : Text(
-                                            message.message,
-                                            style: TextStyle(fontSize: 16),
-                                          ),
+                                        : message.imageUrl.isNotEmpty
+                                            ? Image.network(message.imageUrl)
+                                            : Text(
+                                                message.message,
+                                                style: TextStyle(fontSize: 16),
+                                              ),
                                   ),
                                 ),
                               ),
@@ -202,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _isLoading = true;
       _messages.addAll([
-        Message(userMessage, DateTime.now(), fromChatGpt: false),
+        Message.fromUser(userMessage, DateTime.now()),
         Message.waitResponse(DateTime.now()),
       ]);
       _scrollDown();
@@ -211,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _sendMessage(userMessage).then((chatGptMessage) {
       setState(() {
         _messages.last =
-            Message(chatGptMessage.trim(), DateTime.now(), fromChatGpt: true);
+            Message.fromChatGPT(chatGptMessage.trim(), DateTime.now());
         _isLoading = false;
       });
       _scrollDown();
@@ -235,14 +247,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onTapImage(String message) {
-    _generateImages(message, 2);
+    setState(() {
+      _isLoading = true;
+      _messages.addAll([
+        Message.fromUser(message, DateTime.now()),
+        Message.waitResponse(DateTime.now()),
+      ]);
+      _scrollDown();
+    });
+
+    _generateImages(message, 2).then((urls) {
+      setState(() {
+        _messages.removeLast();
+        _messages.addAll(urls.map((e) => Message.image(e, DateTime.now())));
+        _isLoading = false;
+      });
+    });
   }
 
-  Future<void> _generateImages(String message, int numOfImages) async {
+  Future<Iterable<String>> _generateImages(
+      String message, int numOfImages) async {
     final request = GenerateImage(message, numOfImages, size: '256x256');
     final response = await openAI.generateImage(request);
     final imageList = response?.data ?? [];
 
-    print(imageList);
+    return imageList
+        .where((e) => e != null && e.url != null)
+        .map((e) => e!.url!);
   }
 }
