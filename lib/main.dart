@@ -16,6 +16,9 @@ class Message {
   final String message;
   final bool fromChatGpt;
   final DateTime sendTime;
+
+  Message.waitResponse(DateTime now)
+      : this('', DateTime.now(), fromChatGpt: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -188,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _isLoading = true;
       _messages.addAll([
         Message(userMessage, DateTime.now(), fromChatGpt: false),
-        Message('...', DateTime.now(), fromChatGpt: true),
+        Message.waitResponse(DateTime.now()),
       ]);
     });
 
