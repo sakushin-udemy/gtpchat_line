@@ -143,7 +143,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: showLoadingIcon
                                         ? const CircularProgressIndicator()
                                         : message.imageUrl.isNotEmpty
-                                            ? Image.network(message.imageUrl)
+                                            ? Image.network(
+                                                message.imageUrl,
+                                                frameBuilder: (BuildContext
+                                                        context,
+                                                    Widget child,
+                                                    int? frame,
+                                                    bool
+                                                        wasSynchronouselyLoaded) {
+                                                  if (!wasSynchronouselyLoaded) {
+                                                    _scrollDown();
+                                                  }
+                                                  return child;
+                                                },
+                                              )
                                             : Text(
                                                 message.message,
                                                 style: TextStyle(fontSize: 16),
