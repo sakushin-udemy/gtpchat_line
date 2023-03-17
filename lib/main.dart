@@ -56,35 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var _answer = '';
 
-  final _messages = <Message>[
-    Message("こんにちは！", DateTime(2023, 4, 1, 9, 5, 0), fromChatGpt: false),
-    Message("こんにちは！お元気ですか？", DateTime(2023, 4, 1, 9, 59, 0), fromChatGpt: true),
-    Message("はい、元気です。あなたは何ができますか？", DateTime(2023, 4, 1, 10, 2, 0),
-        fromChatGpt: false),
-    Message("私はあなたの悩みを聞いたり、おすすめのレストランを教えたり、天気予報を教えたりすることができます。何かお探しですか？",
-        DateTime(2023, 4, 1, 10, 3, 0),
-        fromChatGpt: true),
-    Message("今日の天気はどうですか？", DateTime(2023, 4, 1, 10, 4, 0), fromChatGpt: false),
-    Message("今日の天気は晴れで、最高気温は20度、最低気温は10度の予想です。お出かけの際はお気をつけください。",
-        DateTime(2023, 4, 1, 10, 0, 0),
-        fromChatGpt: true),
-    Message("ありがとうございます。今度、美味しいレストランを教えてください。", DateTime(2023, 4, 1, 10, 5, 0),
-        fromChatGpt: false),
-    Message("もちろんです！どのような種類のレストランがお好みですか？イタリアン、和食、中華料理、その他ですか？",
-        DateTime(2023, 4, 1, 10, 6, 0),
-        fromChatGpt: true),
-    Message("今日はイタリアンが食べたいです。", DateTime(2023, 4, 1, 10, 0, 0),
-        fromChatGpt: false),
-    Message(
-        "おすすめのイタリアンレストランは、近くにある「La Piazza」です。おいしいパスタやピザが評判で、雰囲気も良いですよ。行ってみてはいかがでしょうか？",
-        DateTime(2023, 4, 1, 10, 17, 0),
-        fromChatGpt: true),
-    Message("素晴らしいアドバイスですね。行ってみます！", DateTime(2023, 4, 1, 12, 8, 0),
-        fromChatGpt: false),
-    Message(
-        "是非お楽しみください！また何かありましたら、いつでもご相談ください。", DateTime(2023, 4, 1, 13, 0, 0),
-        fromChatGpt: true),
-  ];
+  final _messages = <Message>[];
 
   static Color colorBackground = Color.fromARGB(0xFF, 0x90, 0xac, 0xd7);
   static Color colorMyMessage = Color.fromARGB(0xFF, 0x8a, 0xe1, 0x7e);
@@ -186,17 +158,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   )),
                   IconButton(
                       onPressed: () async {
-                        final answer =
-                            await _sendMessage(_textEditingController.text);
-                        setState(() {
-                          _answer = answer;
-                        });
+                        _onTapSend(_textEditingController.text);
                       },
                       icon: Icon(Icons.send)),
                 ],
               ),
             ),
-            Text(_answer),
           ],
         ),
       ),
@@ -205,6 +172,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  void _onTapSend(String userMessage) {
+    setState(() {
+      _messages.addAll([
+        Message(userMessage, DateTime.now(), fromChatGpt: false),
+        Message('...', DateTime.now(), fromChatGpt: true),
+      ]);
+    });
+
+    _sendMessage(userMessage).then((chatGptMessage) {
+      setState(() {
+        _messages.last =
+            Message(chatGptMessage, DateTime.now(), fromChatGpt: true);
+      });
+    });
   }
 
   Future<String> _sendMessage(String message) async {
