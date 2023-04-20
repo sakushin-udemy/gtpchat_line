@@ -1,5 +1,4 @@
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
-import 'package:chat_gpt_sdk/src/model/gen_image/response/image_data.dart';
 import 'package:flutter/material.dart';
 
 import 'api_key.dart';
@@ -60,7 +59,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final openAI = OpenAI.instance.build(
     token: writeYourOpenAPIKey,
-    isLogger: true,
+    isLog: true,
   );
 
   final _textEditingController = TextEditingController(
@@ -143,20 +142,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: showLoadingIcon
                                         ? const CircularProgressIndicator()
                                         : message.imageUrl.isNotEmpty
-                                            ? Image.network(
-                                                message.imageUrl,
+                                            ? Image.network(message.imageUrl,
                                                 frameBuilder: (BuildContext
                                                         context,
                                                     Widget child,
                                                     int? frame,
                                                     bool
-                                                        wasSynchronouselyLoaded) {
-                                                  if (!wasSynchronouselyLoaded) {
-                                                    _scrollDown();
-                                                  }
-                                                  return child;
-                                                },
-                                              )
+                                                        wasSynchronouslyLoaded) {
+                                                if (!wasSynchronouslyLoaded) {
+                                                  _scrollDown();
+                                                }
+                                                return child;
+                                              })
                                             : Text(
                                                 message.message,
                                                 style: TextStyle(fontSize: 16),
@@ -244,8 +241,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<String> _sendMessage(String message) async {
-    final request =
-        CompleteText(prompt: message, model: kTextDavinci3, maxTokens: 200);
+    final request = CompleteText(
+        prompt: message, model: Model.textDavinci3, maxTokens: 200);
 
     final response = await openAI.onCompletion(request: request);
     return response!.choices.first.text;
@@ -280,7 +277,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Iterable<String>> _generateImages(
       String message, int numOfImages) async {
-    final request = GenerateImage(message, numOfImages, size: '256x256');
+    final request =
+        GenerateImage(message, numOfImages, size: ImageSize.size256);
     final response = await openAI.generateImage(request);
     final imageList = response?.data ?? [];
 
