@@ -78,6 +78,17 @@ class _MyHomePageState extends State<MyHomePage> {
   static Color colorInput = Color.fromARGB(0xFF, 0xf5, 0xf5, 0xf5);
 
   @override
+  void initState() {
+    super.initState();
+
+    openAI.listModel().then((models) {
+      models.data.forEach((model) {
+        print(model.id + ' ' + model.ownerBy);
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
 
@@ -257,6 +268,7 @@ class _MyHomePageState extends State<MyHomePage> {
         prompt: message, model: Model.textDavinci3, maxTokens: 200);
 
     final response = await openAI.onCompletion(request: request);
+    print(response?.model);
     return response!.choices.first.text;
   }
 
