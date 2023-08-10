@@ -59,7 +59,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final openAI = OpenAI.instance.build(
     token: writeYourOpenAPIKey,
-    isLog: true,
+    enableLog: true,
+    baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 10)),
   );
 
   final _textEditingController = TextEditingController(
@@ -265,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String> _sendMessage(String message) async {
     final request = CompleteText(
-        prompt: message, model: Model.textDavinci3, maxTokens: 200);
+        prompt: message, model: TextDavinci3Model(), maxTokens: 200);
 
     final response = await openAI.onCompletion(request: request);
     print(response?.model);
