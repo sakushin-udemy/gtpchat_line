@@ -59,7 +59,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final openAI = OpenAI.instance.build(
     token: writeYourOpenAPIKey,
-    isLog: true,
+    enableLog: true,
+    baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 20)),
   );
 
   final _textEditingController = TextEditingController(
@@ -254,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String> _sendMessage(String message) async {
     final request = CompleteText(
-        prompt: message, model: Model.textDavinci3, maxTokens: 200);
+        prompt: message, model: Gpt3TurboInstruct(), maxTokens: 200);
 
     final response = await openAI.onCompletion(request: request);
     return response!.choices.first.text;
@@ -289,8 +290,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Iterable<String>> _generateImages(
       String message, int numOfImages) async {
-    final request =
-        GenerateImage(message, numOfImages, size: ImageSize.size256);
+    final request = GenerateImage(message, numOfImages,
+        size: ImageSize.size256, model: DallE2());
     final response = await openAI.generateImage(request);
     final imageList = response?.data ?? [];
 
